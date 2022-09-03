@@ -1,6 +1,7 @@
-import { useEffect, useInsertionEffect, useState } from "react";
-import { dbService } from "../fbase";
+import { useEffect, useState } from "react";
+import { dbService, storageService } from "../fbase";
 import Nweet from "components/Nweet";
+import { v4 as uuidv4 } from "uuid";
 
 const Home = ({ userObj }) => {
     const [nweet, setNweet] = useState("");
@@ -10,12 +11,35 @@ const Home = ({ userObj }) => {
     // 등록
     const onSubmit = async (event) => {
         event.preventDefault();
+
+        const attachmentUrl = "";
+
+        if (attachmentUrl !== "") {
+            //uuid 사용 (이미지와 db아이디 매칭)
+            const attachmentRef = storageService
+                .ref()
+                .child(`${userObj.uid}/${uuidv4()}`);
+
+            //putString = 해당 url인자를 전달하기만 하면 파일이 스토리지에 바로 저장된다
+            const reponse = await attachmentRef.putString(
+                attachment,
+                "data_url"
+            );
+
+            //사진 불러오기 = response.ref.getDownloadURL 함수를 사용해서 불러올 수 있다.
+            attachmentUrl = await reponse.ref.getDownloadURL();
+        }
+
         await dbService.collection("nweets").add({
             text: nweet,
             createAt: Date.now(),
             creatorId: userObj.uid,
+            attachmentUrl,
         });
+
+        //초기화
         setNweet("");
+        setAttachment("");
     };
 
     const onChange = (event) => {
@@ -71,7 +95,7 @@ const Home = ({ userObj }) => {
                 <input type="submit" value="Nweet" />
                 {attachment && (
                     <>
-                        <img src={attachment} width="50px" height="50px"></img>
+                        <img src={attachment} width="50px" height="50px" />
                         <button onClick={onClearAttachment}>삭제</button>
                     </>
                 )}

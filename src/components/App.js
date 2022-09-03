@@ -7,11 +7,16 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userObj, setUserObj] = useState(null);
 
+    const refreshUser = () => {
+        setUserObj(authService.currentUser);
+    };
+
     useEffect(() => {
         authService.onAuthStateChanged((user) => {
             if (user) {
                 setIsLoggedIn(user.multiFactor.user);
                 setUserObj(user.multiFactor.user);
+
                 console.log(user.multiFactor.user.uid);
             } else {
                 setIsLoggedIn(false);
@@ -23,7 +28,11 @@ function App() {
     return (
         <>
             {init ? (
-                <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} />
+                <AppRouter
+                    refreshUser={refreshUser}
+                    isLoggedIn={isLoggedIn}
+                    userObj={userObj}
+                />
             ) : (
                 "initializing"
             )}
