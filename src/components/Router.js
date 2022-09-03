@@ -9,14 +9,18 @@ import Home from "routes/Home";
 import Profile from "routes/Profile";
 import Navigation from "components/Navigation";
 
-const AppRouter = ({ isLoggedIn }) => {
+const AppRouter = ({ isLoggedIn, userObj }) => {
     return (
         <Router>
             {isLoggedIn && <Navigation />}
             <Routes>
                 {isLoggedIn ? (
                     <>
-                        <Route path="/" exact element={<Home />} />
+                        <Route
+                            path="/"
+                            exact
+                            element={<Home userObj={userObj} />}
+                        />
                         <Route path="/profile" exact element={<Profile />} />
                     </>
                 ) : (

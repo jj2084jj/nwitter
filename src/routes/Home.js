@@ -1,23 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useInsertionEffect, useState } from "react";
 import { dbService } from "../fbase";
 
-const Home = () => {
+const Home = ({ userObj }) => {
     const [nweet, setNweet] = useState("");
     const [nweets, setNweets] = useState([]);
 
-    const getNeets = async () => {
-        const dbNeets = await dbService.collection("nweets").get(); //스냅샵을 통해 데이터는 숨겨져있음
-
-        dbNeets.forEach((document) =>
-            setNweets((prev) => [document.data(), ...prev])
-        );
-    };
-
+    // 등록
     const onSubmit = async (event) => {
         event.preventDefault();
         await dbService.collection("nweets").add({
             text: nweet,
             createAt: Date.now(),
+            creatorId: userObj.uid,
         });
         setNweet("");
     };
@@ -30,24 +24,36 @@ const Home = () => {
         setNweet(value);
     };
 
-    //
     useEffect(() => {
-        getNeets();
+        dbService.collection("nweets").onSnapshot((snapshop) => {
+            const newArray = snapshop.docs.map((document) => ({
+                id: document.id,
+                ...document.data(),
+            }));
+            setNweets(newArray);
+        });
     }, []);
 
-    console.log(nweets);
-
     return (
-        <form onSubmit={onSubmit}>
-            <input
-                value={nweet}
-                onChange={onChange}
-                type="text"
-                placeholder="입력"
-                maxLength={120}
-            />
-            <input type="submit" value="Nweet" />
-        </form>
+        <>
+            <form onSubmit={onSubmit}>
+                <input
+                    value={nweet}
+                    onChange={onChange}
+                    type="text"
+                    placeholder="입력"
+                    maxLength={120}
+                />
+                <input type="submit" value="Nweet" />
+            </form>
+            <div>
+                {nweets.map((nweet) => (
+                    <div key={nweet.id}>
+                        <h4>{nweet.text}</h4>
+                    </div>
+                ))}
+            </div>
+        </>
     );
 };
 
