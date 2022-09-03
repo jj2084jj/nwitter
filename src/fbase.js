@@ -1,6 +1,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
+import "firebase/compat/storage";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -15,3 +16,4 @@ firebase.initializeApp(firebaseConfig);
 export const firebaseInstance = firebase; //소셜로그인에 대한 기능이 들들어어있있음
 export const authService = firebase.auth();
 export const dbService = firebase.firestore();
+export const storageService = firebase.storage();
