@@ -12,23 +12,24 @@ const Home = ({ userObj }) => {
     const onSubmit = async (event) => {
         event.preventDefault();
 
-        const attachmentUrl = "";
+        let attachmentUrl = "";
 
-        if (attachmentUrl !== "") {
+        if (attachment !== "") {
             //uuid 사용 (이미지와 db아이디 매칭)
             const attachmentRef = storageService
                 .ref()
                 .child(`${userObj.uid}/${uuidv4()}`);
 
             //putString = 해당 url인자를 전달하기만 하면 파일이 스토리지에 바로 저장된다
-            const reponse = await attachmentRef.putString(
+            const response = await attachmentRef.putString(
                 attachment,
                 "data_url"
             );
 
             //사진 불러오기 = response.ref.getDownloadURL 함수를 사용해서 불러올 수 있다.
-            attachmentUrl = await reponse.ref.getDownloadURL();
+            attachmentUrl = await response.ref.getDownloadURL();
         }
+        console.log(attachmentUrl);
 
         await dbService.collection("nweets").add({
             text: nweet,
