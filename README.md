@@ -1,14 +1,15 @@
-# test
+### 노마드 코더 (트위터 만들기)
 
-test
+노마드 코더 트위터 만들기 책을 보며 만든 프로젝트 입니다
 
-# Getting Started with Create React App
+<hr />
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 사용스택
 
-## Available Scripts
+fireBase <br />
+react <br />
 
-In the project directory, you can run:
+<hr />
 
 ### `npm start`
 
